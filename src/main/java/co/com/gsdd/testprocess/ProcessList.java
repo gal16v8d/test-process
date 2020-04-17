@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 
@@ -20,16 +21,11 @@ public class ProcessList {
         StringWriter writer = new StringWriter();
         IOUtils.copy(pr.getInputStream(), writer, Charset.defaultCharset());
         String winProcess = writer.toString();
-        for (ProcessEnum pe : ProcessEnum.values()) {
-            Optional<ProcessDto> optionalProcess = getProcess(winProcess,
-                    pe.name().toLowerCase() + GeneralConstants.EXE);
-            if (optionalProcess.isPresent()) {
-                ProcessDto p = optionalProcess.get();
-                log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSesion(), p.getSesionId(), p.getMemory());
-            } else {
-                log.error("Process: {} is not in execution.", pe.name().toLowerCase());
-            }
-        }
+        Stream.of(ProcessEnum.values())
+                .forEach(pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE).ifPresentOrElse(
+                        p -> log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSesion(), p.getSesionId(),
+                                p.getMemory()),
+                        () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
     }
 
     /**
