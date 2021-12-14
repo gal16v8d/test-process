@@ -3,16 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>co.com.gsdd</groupId>
+	<groupId>com.gsdd</groupId>
 	<artifactId>testprocess</artifactId>
 	<version>1.0.001</version>
 	<packaging>jar</packaging>
 
+	<name>testprocess</name>
 	<organization>
 		<name>GSDD</name>
 	</organization>
-	<name>testprocess</name>
-
+	
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
 		<project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
@@ -27,10 +27,9 @@
 		<mvn.format.plugin.version>2.10.0</mvn.format.plugin.version>
 
 		<commons.io.version>2.6</commons.io.version>
-		<lombok.version>1.18.20</lombok.version>
-		<slf4j.version>1.7.25</slf4j.version>
-		<log4j.bridge.version>2.9.0</log4j.bridge.version>
-		<log4j.version>2.13.3</log4j.version>
+		<lombok.version>1.18.22</lombok.version>
+		<slf4j.version>1.7.32</slf4j.version>
+		<log4j.version>2.15.0</log4j.version>
 	</properties>
 
 	<dependencies>
@@ -53,7 +52,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j.bridge.version}</version>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -93,6 +92,9 @@
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>${mvn.format.plugin.version}</version>
+				<configuration>
+					<configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
