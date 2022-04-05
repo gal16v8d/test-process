@@ -20,10 +20,11 @@ public class ProcessList {
     IOUtils.copy(pr.getInputStream(), writer, Charset.defaultCharset());
     String winProcess = writer.toString();
     Stream.of(ProcessEnum.values())
-    .forEach(pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE).ifPresentOrElse(
-            p -> log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSesion(), p.getSesionId(),
-                    p.getMemory()),
-            () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
+        .forEach(pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE)
+            .ifPresentOrElse(
+                p -> log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSesion(),
+                    p.getSesionId(), p.getMemory()),
+                () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
   }
 
   /**
