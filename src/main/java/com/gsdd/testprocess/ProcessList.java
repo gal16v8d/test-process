@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import com.gsdd.testprocess.constants.GeneralConstants;
 import com.gsdd.testprocess.dto.ProcessDto;
@@ -18,17 +19,12 @@ public class ProcessList {
     StringWriter writer = new StringWriter();
     IOUtils.copy(pr.getInputStream(), writer, Charset.defaultCharset());
     String winProcess = writer.toString();
-    for (ProcessEnum pe : ProcessEnum.values()) {
-      Optional<ProcessDto> optionalProcess =
-          getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE);
-      if (optionalProcess.isPresent()) {
-        ProcessDto p = optionalProcess.get();
-        log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSesion(), p.getSesionId(),
-            p.getMemory());
-      } else {
-        log.error("Process: {} is not in execution.", pe.name().toLowerCase());
-      }
-    }
+    Stream.of(ProcessEnum.values())
+        .forEach(pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE)
+            .ifPresentOrElse(
+                p -> log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSession(),
+                    p.getSessionId(), p.getMemory()),
+                () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
   }
 
   /**
@@ -48,15 +44,9 @@ public class ProcessList {
         s = s.trim();
         s = s.replaceAll(GeneralConstants.REGEX_SPACE, GeneralConstants.SPLIT);
         String[] aux = s.split(GeneralConstants.SPLIT);
-        if (aux != null && aux.length == 5) {
-          if (aux[0].trim().equals(filter.trim())) {
-            temp = new ProcessDto();
-            temp.setName(aux[0]);
-            temp.setPid(aux[1]);
-            temp.setSesion(aux[2]);
-            temp.setSesionId(aux[3]);
-            temp.setMemory(aux[4] + GeneralConstants.KB);
-          }
+        if (aux != null && aux.length == 5 && aux[0].trim().equals(filter.trim())) {
+          temp = ProcessDto.builder().name(aux[0]).pid(aux[1]).session(aux[2]).sessionId(aux[3])
+              .memory(aux[4] + GeneralConstants.KB).build();
         }
       }
     }
