@@ -1,9 +1,8 @@
 package com.gsdd.testprocess.constants;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class GeneralConstants {
 
   public static final String INDEX_SEP = "=";
