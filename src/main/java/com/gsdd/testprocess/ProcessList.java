@@ -20,11 +20,17 @@ public class ProcessList {
     IOUtils.copy(pr.getInputStream(), writer, Charset.defaultCharset());
     String winProcess = writer.toString();
     Stream.of(ProcessEnum.values())
-        .forEach(pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE)
-            .ifPresentOrElse(
-                p -> log.info("{} {} {} {} {}", p.getName(), p.getPid(), p.getSession(),
-                    p.getSessionId(), p.getMemory()),
-                () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
+        .forEach(
+            pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE)
+                .ifPresentOrElse(
+                    p -> log.info(
+                        "{} {} {} {} {}",
+                        p.getName(),
+                        p.getPid(),
+                        p.getSession(),
+                        p.getSessionId(),
+                        p.getMemory()),
+                    () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
   }
 
   /**
@@ -45,8 +51,13 @@ public class ProcessList {
         s = s.replaceAll(GeneralConstants.REGEX_SPACE, GeneralConstants.SPLIT);
         String[] aux = s.split(GeneralConstants.SPLIT);
         if (aux != null && aux.length == 5 && aux[0].trim().equals(filter.trim())) {
-          temp = ProcessDto.builder().name(aux[0]).pid(aux[1]).session(aux[2]).sessionId(aux[3])
-              .memory(aux[4] + GeneralConstants.KB).build();
+          temp = ProcessDto.builder()
+              .name(aux[0])
+              .pid(aux[1])
+              .session(aux[2])
+              .sessionId(aux[3])
+              .memory(aux[4] + GeneralConstants.KB)
+              .build();
         }
       }
     }
