@@ -15,22 +15,42 @@ import lombok.extern.slf4j.Slf4j;
 public class ProcessList {
 
   public static void main(String[] args) throws IOException {
-    Process pr = Runtime.getRuntime().exec(GeneralConstants.TASK_WIN);
-    StringWriter writer = new StringWriter();
+    var osName = System.getProperty(GeneralConstants.OS_NAME).toLowerCase();
+    var command = new String[] {getCommandByOs(osName)};
+    var pr = Runtime.getRuntime().exec(command);
+    var writer = new StringWriter();
     IOUtils.copy(pr.getInputStream(), writer, Charset.defaultCharset());
+    var ext = appendExt(osName);
     String winProcess = writer.toString();
     Stream.of(ProcessEnum.values())
         .forEach(
-            pe -> getProcess(winProcess, pe.name().toLowerCase() + GeneralConstants.EXE)
-                .ifPresentOrElse(
-                    p -> log.info(
-                        "{} {} {} {} {}",
-                        p.getName(),
-                        p.getPid(),
-                        p.getSession(),
-                        p.getSessionId(),
-                        p.getMemory()),
-                    () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
+            pe -> getProcess(winProcess, pe.name().toLowerCase() + ext).ifPresentOrElse(
+                p -> log.info(
+                    "{} {} {} {} {}",
+                    p.getName(),
+                    p.getPid(),
+                    p.getSession(),
+                    p.getSessionId(),
+                    p.getMemory()),
+                () -> log.error("Process: {} is not in execution.", pe.name().toLowerCase())));
+  }
+
+  private static String getCommandByOs(String osName) {
+    String result;
+    if (osName.startsWith(GeneralConstants.OS_WIN)) {
+      result = GeneralConstants.TASK_WIN;
+    } else if (osName.startsWith(GeneralConstants.OS_MAC)) {
+      result = GeneralConstants.TASK_LIN;
+    } else if (osName.startsWith(GeneralConstants.OS_LIN)) {
+      result = GeneralConstants.TASK_LIN;
+    } else {
+      result = null;
+    }
+    return result;
+  }
+
+  private static String appendExt(String osName) {
+    return osName.startsWith(GeneralConstants.OS_WIN) ? GeneralConstants.EXE : "";
   }
 
   /**
@@ -40,7 +60,7 @@ public class ProcessList {
    * @param filter process to search.
    * @return process found
    */
-  public static Optional<ProcessDto> getProcess(String in, String filter) {
+  private static Optional<ProcessDto> getProcess(String in, String filter) {
     ProcessDto temp = null;
     in = in.substring(in.lastIndexOf(GeneralConstants.INDEX_SEP) + 1);
     String[] array = in.split(GeneralConstants.KB);
