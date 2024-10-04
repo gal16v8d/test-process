@@ -1,5 +1,6 @@
 package com.gsdd.testprocess.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Generated;
@@ -10,6 +11,7 @@ import lombok.Getter;
 @Getter
 public class ProcessDto implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 6235826557390781553L;
   private String name;
   private String pid;

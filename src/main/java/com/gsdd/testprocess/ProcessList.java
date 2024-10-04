@@ -55,7 +55,7 @@ public class ProcessList {
 
   /**
    * Get all process on execution by name.
-   * 
+   *
    * @param in inputstream.
    * @param filter process to search.
    * @return process found
