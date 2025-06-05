@@ -65,12 +65,12 @@ public class ProcessList {
     in = in.substring(in.lastIndexOf(GeneralConstants.INDEX_SEP) + 1);
     String[] array = in.split(GeneralConstants.KB);
 
-    if (array != null && filter != null) {
+    if (filter != null) {
       for (String s : array) {
         s = s.trim();
         s = s.replaceAll(GeneralConstants.REGEX_SPACE, GeneralConstants.SPLIT);
         String[] aux = s.split(GeneralConstants.SPLIT);
-        if (aux != null && aux.length == 5 && aux[0].trim().equals(filter.trim())) {
+        if (aux.length == 5 && aux[0].trim().equals(filter.trim())) {
           temp = ProcessDto.builder()
               .name(aux[0])
               .pid(aux[1])
